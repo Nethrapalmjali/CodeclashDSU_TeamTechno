@@ -10,6 +10,8 @@
 
 *"In invisible warfare, visibility is your only weapon."*
 
+<img src="assets/dashboard-preview.png" alt="RFIDS-X Tactical Dashboard" width="100%" />
+
 </div>
 
 <br />
