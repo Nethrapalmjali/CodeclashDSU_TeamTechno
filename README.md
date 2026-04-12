@@ -57,20 +57,61 @@ Our stack is highly scalable, incredibly fast, and insanely beautiful.
 - **✨ Motion & Visuals** : Framer Motion (buttery physics-based animations), Recharts (Live Telemetry).
 - **⚙️ Simulation Core** : Custom Node.js engine for randomized environment generation and AI rule processing.
 
-```text
- ┌───[ 📡 SENSOR GRID ]───────────────────────┐
- │ Physics Modeler ──▶ Signal Propagation     │
- └───┬────────────────────────────────────────┘
-     │ Real-Time Feed
- ┌───▼────────────────────────────────────────┐
- │ 🧠 AI THREAT ENGINE                        │
- │ Anomaly Detection ──▶ Severity Classifier  │
- └───┬────────────────────────────────────────┘
-     │ WebSockets
- ┌───▼────────────────────────────────────────┐
- │ 💻 CYBER DASHBOARD (Glassmorphism UI)      │
- │ Tactical Radar ──▶ UAV Dispatch Control    │
- └────────────────────────────────────────────┘
+```mermaid
+graph TD
+    classDef frontend fill:#0f172a,stroke:#06b6d4,stroke-width:2px,color:#fff;
+    classDef backend fill:#1e1b4b,stroke:#a855f7,stroke-width:2px,color:#fff;
+    classDef ai fill:#4c1d95,stroke:#ec4899,stroke-width:2px,color:#fff;
+    classDef db fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
+    classDef external fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#fff,stroke-dasharray: 5 5;
+
+    subgraph "External Threats"
+        E1[Jammer Node]:::external
+        E2[Drone Telemetry]:::external
+        E3[Rogue Comms]:::external
+    end
+
+    subgraph "📡 Sensor Grid (Physics Layer)"
+        S1[RF Modeler Module]:::backend
+        S2[Signal Propagation <br/> S = P / d²]:::backend
+        S1 --> S2
+        E1 -.-> S1
+        E2 -.-> S1
+        E3 -.-> S1
+    end
+
+    subgraph "🧠 Intelligence Layer (Node/Python)"
+        AI1[Anomaly Detection Engine]:::ai
+        AI2[FHSS Pattern Analyzer]:::ai
+        AI3[Severity Classifier]:::ai
+        
+        S2 == "Raw Telemetry" ==> AI1
+        AI1 --> AI2
+        AI1 --> AI3
+        AI2 --> AI3
+    end
+
+    subgraph "🗄️ Persistence & Sync"
+        DB[(PostgreSQL Database)]:::db
+        WSS{{WebSocket Gateway}}:::backend
+        
+        AI3 --> DB
+        AI3 == "Threat PubSub" ==> WSS
+    end
+
+    subgraph "💻 Tactical Command UI (React/Vite)"
+        UI1[Glassmorphism Dashboard]:::frontend
+        UI2[Polar Grid Radar]:::frontend
+        UI3[UAV Automated Dispatch]:::frontend
+        UI4[SNR Analytics Overhead]:::frontend
+
+        WSS == "Live Sync" ==> UI1
+        UI1 --> UI2
+        UI1 --> UI4
+        UI1 --> UI3
+    end
+
+    UI3 -. "Dispatch Cmd" .-> E1
 ```
 
 <br />
