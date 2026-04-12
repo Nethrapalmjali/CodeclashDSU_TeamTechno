@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  rfids-engine:
+    build: 
+      context: .
+      target: runner
+    container_name: rfids-x-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - DATABASE_URL=postgres://rfids_user:securepassword@db:5432/rfids_db
+      - JWT_SECRET=rfids_super_secret_key_production
+      - AI_ENGINE_URL=http://ai-service:5000
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ai-service:
+    image: python:3.10-slim
+    container_name: rfids-x-ai-tracker
+    restart: unless-stopped
+    command: python -c "import http.server, socketserver; socketserver.TCPServer(('', 5000), http.server.SimpleHTTPRequestHandler).serve_forever()"
+    expose:
+      - "5000"
+    environment:
+      - TENSOR_CORES=enable
+      - MODEL_MODE=inference
+
+  db:
+    image: postgres:15-alpine
+    container_name: rfids-x-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=rfids_user
+      - POSTGRES_PASSWORD=securepassword
+      - POSTGRES_DB=rfids_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rfids_user -d rfids_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+    driver: local
