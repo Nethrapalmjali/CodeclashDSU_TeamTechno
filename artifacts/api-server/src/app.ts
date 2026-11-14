@@ -1,4 +1,9 @@
-import express, { type Express } from "express";
+import express, {
+  type Express,
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
@@ -30,5 +35,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
+
+// Unknown routes: respond with JSON instead of Express's default HTML page.
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Not found" });
+});
+
+// Central error handler: log details server-side, never leak stack traces.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  logger.error({ err }, "Unhandled error");
+  const status =
+    typeof (err as { status?: unknown })?.status === "number" &&
+    (err as { status: number }).status >= 400 &&
+    (err as { status: number }).status < 600
+      ? (err as { status: number }).status
+      : 500;
+  res
+    .status(status)
+    .json({ error: status === 500 ? "Internal server error" : "Request failed" });
+});
 
 export default app;
