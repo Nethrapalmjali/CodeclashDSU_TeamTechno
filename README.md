@@ -134,12 +134,34 @@ graph TD
 🔗 **[ENTER LIVE DEMO DASHBOARD](https://b52ca5d9-6edd-4b77-9b38-2a9c712fcc50.kirk.prod.repl.run/)** *(Web App hosted via Replit)*
 
 *Or run locally:*
+**Prerequisites:** Node.js 20+ and [pnpm](https://pnpm.io) 9+.
+
 ```bash
 git clone <repo_url>
-cd artifacts/mockup-sandbox
-npx pnpm install
-npx pnpm build && npx pnpm preview
+cd CodeclashDSU_TeamTechno
+pnpm install --frozen-lockfile --ignore-scripts
+
+# UI sandbox (Vite) -> http://localhost:5173
+PORT=5173 BASE_PATH=/ pnpm --filter "./artifacts/mockup-sandbox" run dev
+# or simply: make dev
+
+# API server (separate terminal) -> http://localhost:8080/api/healthz
+pnpm --filter @workspace/api-server run build
+PORT=8080 node artifacts/api-server/dist/index.js
 ```
+
+> `PORT` is required by both services (and `BASE_PATH` by the UI); they exit with a clear error if it is missing or invalid.
+> Copy `.env.example` to `.env` for local configuration. Run `make help` to list all automation targets.
+
+### 🗂️ **Project Structure**
+
+| Path | Purpose |
+| :--- | :--- |
+| `artifacts/mockup-sandbox` | React + Vite UI prototyping sandbox |
+| `artifacts/api-server` | Express API (JSON 404/error handling, `/api/healthz`) |
+| `lib/api-spec`, `lib/api-zod`, `lib/api-client-react` | OpenAPI spec and generated Zod schemas / React client |
+| `lib/db` | Database layer (Drizzle) |
+| `scripts` | Workspace helper scripts |
 
 ---
 
