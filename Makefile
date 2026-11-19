@@ -3,7 +3,7 @@
 # Production & Development Automation
 # ==============================================================================
 
-.PHONY: setup dev build start test docker-up docker-down clean check
+.PHONY: help setup dev build start docker-up docker-down typecheck clean
 
 # ------------------------------------------------------------------------------
 # Default Target: Help
@@ -20,9 +20,9 @@ setup: ## Initialize PNPM workspace and restore dependencies
 
 # ------------------------------------------------------------------------------
 # Local Development
-dev: ## Spin up local development server (Frontend UI Sandbox & API)
-	@echo "=> Booting UI and Backend in Watch Mode..."
-	$env:PORT="5173" $env:BASE_PATH="/" pnpm run dev
+dev: ## Start the Vite UI sandbox on port 5173 (run the API separately with make start)
+	@echo "=> Booting UI sandbox in dev mode..."
+	PORT=5173 BASE_PATH=/ pnpm --filter "./artifacts/mockup-sandbox" run dev
 
 build: ## Compile TS and bundle UI via Vite for Production
 	@echo "=> Compiling and Minifying binaries..."
