@@ -30,7 +30,16 @@ app.use(
     },
   }),
 );
-app.use(cors());
+// CORS_ORIGIN may be "*" (default) or a comma-separated list of allowed origins.
+const corsOrigin = process.env["CORS_ORIGIN"]?.trim();
+const allowedOrigins =
+  !corsOrigin || corsOrigin === "*"
+    ? true
+    : corsOrigin
+        .split(",")
+        .map((o) => o.trim())
+        .filter(Boolean);
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

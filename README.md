@@ -151,6 +151,8 @@ PORT=8080 node artifacts/api-server/dist/index.js
 ```
 
 > `PORT` is required by both services (and `BASE_PATH` by the UI); they exit with a clear error if it is missing or invalid.
+>
+> Optionally set `CORS_ORIGIN` for the API server: `*` (default) allows any origin, or pass a comma-separated list such as `http://localhost:5173,https://example.com`.
 > Copy `.env.example` to `.env` for local configuration. Run `make help` to list all automation targets.
 
 ### 🗂️ **Project Structure**
