@@ -49,4 +49,7 @@ Thumbs.db
 .local/
 node_modules/
 .env
+.env.*
+!.env.example
+*.log
 .replit
